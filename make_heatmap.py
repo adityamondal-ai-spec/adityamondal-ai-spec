@@ -52,6 +52,11 @@ def build(contrib_json_path, path_out):
     svg = []
     svg.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
                 f'viewBox="0 0 {W} {H}" font-family="\'JetBrains Mono\',monospace">')
+    # Visibility never depends on the animation running - see make_ascii.py's
+    # note. Every cell's real opacity attribute is 1; the CSS keyframe below
+    # plays the staggered reveal as a bonus on top of that.
+    svg.append('<style>@keyframes cellIn{from{opacity:0}to{opacity:1}}'
+                '.cell{animation:cellIn .25s ease-out both}</style>')
     svg.append(f'<rect width="{W}" height="{H}" rx="10" fill="#0d1117"/>')
     svg.append(f'<text x="{pad_left}" y="14" font-size="11" fill="#7d8590">'
                 f'{total} contributions in the last year</text>')
@@ -76,10 +81,9 @@ def build(contrib_json_path, path_out):
             color = PALETTE[lv]
             delay = (i / max(1, total_cells - 1)) * 1.6
             svg.append(
-                f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.5" '
-                f'fill="{color}" opacity="0">'
-                f'<animate attributeName="opacity" from="0" to="1" begin="{delay:.3f}s" '
-                f'dur="0.25s" fill="freeze"/>'
+                f'<rect class="cell" style="animation-delay:{delay:.3f}s" '
+                f'x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.5" '
+                f'fill="{color}" opacity="1">'
                 f'<title>{day["date"]}: {day["contributionCount"]} contributions</title>'
                 f'</rect>'
             )

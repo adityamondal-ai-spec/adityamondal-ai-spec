@@ -1,4 +1,9 @@
-"""Neofetch-style info card SVG with a staggered line-by-line fade-in."""
+"""Neofetch-style info card SVG with a staggered line-by-line fade-in.
+
+Visibility never depends on the animation running (see make_ascii.py's note):
+every line's real opacity attribute is 1, and a plain CSS keyframe (no SMIL,
+no clipPath) plays the staggered fade-in as a bonus on top of that.
+"""
 
 LABEL_COLOR = "#7d8590"
 VALUE_COLOR = "#e6edf3"
@@ -17,6 +22,12 @@ def build(path_out, lines, title="aditya@github"):
     svg = []
     svg.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
                 f'viewBox="0 0 {W} {H}" font-family="{font}">')
+    svg.append('<style>')
+    svg.append('@keyframes lineIn{from{opacity:0}to{opacity:1}}')
+    svg.append('.ln{animation:lineIn .4s ease-out both}')
+    svg.append('@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}')
+    svg.append('.cursor{animation:blink 1s step-end infinite}')
+    svg.append('</style>')
     svg.append(f'<rect width="{W}" height="{H}" rx="10" fill="{BG}" stroke="{BORDER}"/>')
 
     # terminal titlebar
@@ -33,23 +44,19 @@ def build(path_out, lines, title="aditya@github"):
         y = y0 + i * row_h
         delay = 0.15 * i
         svg.append(
-            f'<g opacity="0"><animate attributeName="opacity" from="0" to="1" '
-            f'begin="{delay:.2f}s" dur="0.4s" fill="freeze"/>'
+            f'<g class="ln" opacity="1" style="animation-delay:{delay:.2f}s">'
             f'<text x="{pad_x}" y="{y}" font-size="13" fill="{ACCENT}">&gt;</text>'
             f'<text x="{pad_x+16}" y="{y}" font-size="13" fill="{LABEL_COLOR}">{label}:</text>'
             f'<text x="{pad_x+16+len(label)*7.6+14}" y="{y}" font-size="13" '
             f'fill="{VALUE_COLOR}">{value}</text></g>'
         )
 
-    # blinking cursor after the last line
+    # blinking cursor after the last line - visible immediately, blink is decorative
     last_y = y0 + len(lines) * row_h
     cursor_x = pad_x + 8
     svg.append(
-        f'<g opacity="0"><animate attributeName="opacity" from="0" to="1" '
-        f'begin="{0.15*len(lines):.2f}s" dur="0.2s" fill="freeze"/>'
-        f'<rect x="{cursor_x}" y="{last_y-11}" width="8" height="14" fill="{ACCENT}">'
-        f'<animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.49;0.5;0.99;1" '
-        f'dur="1s" begin="{0.15*len(lines):.2f}s" repeatCount="indefinite"/></rect></g>'
+        f'<rect class="cursor" x="{cursor_x}" y="{last_y-11}" width="8" height="14" '
+        f'fill="{ACCENT}" opacity="1"/>'
     )
 
     svg.append("</svg>")
