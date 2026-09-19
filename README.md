@@ -10,7 +10,7 @@ B.Tech AI/ML student at Jain University, building ML systems and web apps.
 <br>
 Currently shipping **Cafecino** (social discovery for cafes in India) and **AUTIVA** (AI automation).
 
-[![Portfolio](https://img.shields.io/badge/portfolio-aditya--portfolio--dusky--seven.vercel.app-black?style=flat-square&logo=vercel)](https://aditya-portfolio-dusky-seven.vercel.app/)
+[![Portfolio](https://img.shields.io/badge/portfolio-aditya--portfolio--psi--self.vercel.app-black?style=flat-square&logo=vercel)](https://aditya-portfolio-psi-self.vercel.app)
 [![LinkedIn](https://img.shields.io/badge/linkedin-adityamondal--ai-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/adityamondal-ai)
 
 </div>
